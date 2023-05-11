@@ -6,6 +6,7 @@ import os
 import sys
 import urllib.parse
 from typing import List, Optional
+import requests
 
 from pynecone import constants
 from pynecone.base import Base
@@ -195,6 +196,12 @@ class Config(Base):
 
         super().__init__(*args, **kwargs)
 
+        # Check API url CONNECTION 
+        try:
+            response = requests.get(self.api_url)
+            response.raise_for_status() # Raise a HTTPError if the status is 4xx, 5xxx
+        except  (requests.exceptions.ConnectionError, requests.exceptions. ValueError, requests.exceptions.HTTPError):
+            print(f"Warning : cannot connect to the API url : {self.api_url}")
 
 def get_config() -> Config:
     """Get the app config.
